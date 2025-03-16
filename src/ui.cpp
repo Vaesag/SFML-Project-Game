@@ -22,7 +22,8 @@ void UI::setTextures() {
     startBtn.setTexture(textures["start"]);
 }
 
-UI::UI(sf::RenderWindow& window) {
+UI::UI(sf::RenderWindow& window) : window(window) {
+
     setTextures();
     background.setPosition(0, 0);
 
@@ -35,8 +36,41 @@ UI::UI(sf::RenderWindow& window) {
     stopBtn.setPosition(50, 500);
 }
 
-void UI::drawUI(sf::RenderWindow& window) {
+void UI::drawUI() {
     window.draw(background);
     window.draw(startBtn);
     window.draw(stopBtn);
+}
+
+void UI::update() {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+        if (startBtn.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            if (gameState == GameState::Waiting) {
+                gameState = GameState::Spinning;
+                std::cout << "Start Reels Rotate!" << std::endl;
+            }
+        }
+        if (stopBtn.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            if (gameState == GameState::Spinning) {
+                gameState = GameState::Stopping; // Останавливаем барабаны
+                std::cout << "Stop Reels Rotate!" << std::endl;
+            }
+        }
+    }
+    switch (gameState) {
+    case GameState::Waiting:
+        // Ожидание нажатия кнопки "Start"
+        break;
+    case GameState::Spinning:
+        // Барабаны крутятся (позже добавим)
+        break;
+    case GameState::Stopping:
+        // Барабаны останавливаются (позже добавим)
+        break;
+    case GameState::Checking:
+        // Проверяем выигрышные комбинации
+        break;
+    }
 }

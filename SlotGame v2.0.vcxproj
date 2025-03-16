@@ -148,6 +148,7 @@ vorbis.lib
   <ItemGroup>
     <ClInclude Include="include\const.h" />
     <ClInclude Include="include\UI.h" />
+    <ClInclude Include="Reel.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

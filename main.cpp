@@ -12,9 +12,10 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+        ui.update();
 
         window.clear();
-        ui.drawUI(window);
+        ui.drawUI();
         window.display();
     }
 
