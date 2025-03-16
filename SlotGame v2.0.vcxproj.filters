@@ -35,7 +35,7 @@
     <ClInclude Include="include\UI.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="reel.h">
+    <ClInclude Include="include\reel.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

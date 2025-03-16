@@ -42,43 +42,35 @@ void UI::drawUI() {
     window.draw(stopBtn);
 }
 
-void UI::update() {
+void UI::update(SlotMachine& slotMachine) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
         if (startBtn.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             if (gameState == GameState::Waiting) {
                 gameState = GameState::Spinning;
-                std::cout << "Start Reels Rotate!" << std::endl;
+                slotMachine.startSpin();
+                std::cout << "START SPIN" << std::endl;
             }
         }
+
         if (stopBtn.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             if (gameState == GameState::Spinning) {
-                gameState = GameState::Stopping; // Останавливаем барабаны
-                std::cout << "Stop Reels Rotate!" << std::endl;
+                gameState = GameState::Stopping;
+                stopClock.restart();
+                std::cout << "STOP SPIN" << std::endl;
             }
         }
     }
-    switch (gameState) {
-    case GameState::Waiting:
-        // Ожидание нажатия кнопки "Start"
-        break;
-    case GameState::Spinning:
-        // Барабаны крутятся (позже добавим)
-        break;
-    case GameState::Stopping:
-        // Барабаны останавливаются (позже добавим)
-        if (stopClock.getElapsedTime().asSeconds() > 5) {
-            std::cout << "End of Rotate" << std::endl;
+
+    if (gameState == GameState::Stopping) {
+        slotMachine.stopSpin();
+
+        // Теперь используем новый метод вместо прямого доступа к `reels`
+        if (slotMachine.areAllReelsStopped()) {
             gameState = GameState::Checking;
+            std::cout << "ALL REELS STOPPED! CHECKING RESULT..." << std::endl;
+			slotMachine.printReels();
         }
-        break;
-    case GameState::Checking:
-        if (checkClock.getElapsedTime().asSeconds() > 10) {
-            std::cout << "Your WIN!" << std::endl;
-			gameState = GameState::Waiting;
-        }
-        // Проверяем выигрышные комбинации
-        break;
     }
 }

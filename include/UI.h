@@ -1,5 +1,6 @@
 #pragma once
 #include "const.h"
+#include "reel.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <map>
@@ -22,10 +23,8 @@ private:
 public:
     UI(sf::RenderWindow& window);
 
-    sf::Sprite& getSettingsButton() { return startBtn; }
-    
 	void setTextures();
     void loadTexture(const std::string& key, const std::string& path, sf::IntRect rect = sf::IntRect(), bool smooth = true);
     void drawUI();
-    void update();
+    void update(SlotMachine& slotMachine);
 };
