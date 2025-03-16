@@ -143,6 +143,15 @@ vorbis.lib
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\ui.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\const.h" />
+    <ClInclude Include="include\UI.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SlotGame v2.0.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

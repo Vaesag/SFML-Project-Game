@@ -1,20 +1,11 @@
 #include <SFML/Graphics.hpp>
+#include "include/UI.h"
 
 int main() {
-    // Создаем фиксированное окно 800x600
-    sf::RenderWindow window(sf::VideoMode(700, 550), "SlotGames", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SlotGames", sf::Style::Titlebar | sf::Style::Close);
 
-    // Загружаем текстуру для фона
-    sf::Texture backgroundTexture;
-    if (!backgroundTexture.loadFromFile("background.png")) {
-        return -1; // Ошибка, если файл не найден
-    }
+    UI ui(window);
 
-    // Создаем спрайт для фона
-    sf::Sprite backgroundSprite;
-    backgroundSprite.setTexture(backgroundTexture);
-
-    // Главный цикл игры
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -22,9 +13,8 @@ int main() {
                 window.close();
         }
 
-        // Отрисовка
         window.clear();
-        window.draw(backgroundSprite); // Рисуем фон
+        ui.drawUI(window);
         window.display();
     }
 
