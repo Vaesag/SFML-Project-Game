@@ -15,6 +15,9 @@ private:
     std::map<std::string, sf::Texture> textures;
 
     GameState gameState = GameState::Waiting;
+    sf::Clock stopClock;
+    sf::Clock checkClock;
+
 
 public:
     UI(sf::RenderWindow& window);

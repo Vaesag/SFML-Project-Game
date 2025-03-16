@@ -3,36 +3,39 @@
 #include <iostream>
 #include <vector>
 
-struct Reel {
-   // std::vector<Symbol> symbols;  // Лента символов на барабане
-
-    float rotation = 0.0f;        // Текущее смещение барабана
-    float speed = 0.0f;           // Текущая скорость вращения
-    bool spinning = false;        // Флаг, указывает на состояние вращения
-    float elapsedTime = 0.0f;     // Прошедшее время с момента старта
-    bool accelerating = true;     // Флаг ускорения
-    bool decelerating = false;    // Флаг замедления
-    float startDelay = 0.0f;      // Задержка старта вращения
-    bool started = false;         // Флаг, указывает, что вращение началось
-
-    float targetRotation = 0.0f;  // Целевой угол остановки
-    float maxSpeed = 800.0f;      // Максимальная скорость вращения
+enum class Symbol {
+    Strawberry,
+    Grapes, 
+    Pineapple,
+    Lemon
 };
 
-//class Reel {
-//private:
-//    sf::RenderWindow& window;
-//    sf::Sprite background;
-//    sf::Sprite startBtn;
-//    sf::Sprite stopBtn;
-//    std::map<std::string, sf::Texture> textures;
-//
-//public:
-//    UI(sf::RenderWindow& window);
-//
-//    sf::Sprite& getSettingsButton() { return startBtn; }
-//
-//    void setTextures();
-//    void loadTexture(const std::string& key, const std::string& path, sf::IntRect rect = sf::IntRect(), bool smooth = true);
-//    void drawUI();
-//};
+struct Reel {
+    std::vector<Symbol> symbols;  // Лента символов на барабане
+
+    float speed = 0.0f;           // Текущая скорость вращения
+    bool spinning = false;        // Флаг, указывает на состояние вращения
+};
+
+class SlotMachine {
+private:
+	sf::RenderWindow& window;
+	std::vector<Reel> reels[4];       // Барабаны
+
+	std::vector<Symbol> winLine;   // Выигрышная линия
+	sf::Texture texture;           // Текстура символов
+	sf::Sprite sprite;             // Спрайт символов
+	void loadTexture(const std::string& path, sf::IntRect rect = sf::IntRect(), bool smooth = true);
+	void setReels();
+	void setWinLine();
+	void drawReels();
+	void drawWinLine();
+	void drawSymbols();
+	void updateReels();
+	void updateWinLine();
+	void updateSymbols();
+public:
+	SlotMachine(sf::RenderWindow& window);
+	void draw();
+	void update();
+};

@@ -68,8 +68,16 @@ void UI::update() {
         break;
     case GameState::Stopping:
         // Барабаны останавливаются (позже добавим)
+        if (stopClock.getElapsedTime().asSeconds() > 5) {
+            std::cout << "End of Rotate" << std::endl;
+            gameState = GameState::Checking;
+        }
         break;
     case GameState::Checking:
+        if (checkClock.getElapsedTime().asSeconds() > 10) {
+            std::cout << "Your WIN!" << std::endl;
+			gameState = GameState::Waiting;
+        }
         // Проверяем выигрышные комбинации
         break;
     }

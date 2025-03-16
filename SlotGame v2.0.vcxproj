@@ -143,12 +143,13 @@ vorbis.lib
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\reel.cpp" />
     <ClCompile Include="src\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\const.h" />
     <ClInclude Include="include\UI.h" />
-    <ClInclude Include="Reel.h" />
+    <ClInclude Include="reel.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
