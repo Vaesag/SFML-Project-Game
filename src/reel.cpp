@@ -52,7 +52,6 @@ void SlotMachine::startSpin() {
         reel.spinning = true;
         reel.speed = 1.0f + rand() % 1;
     }
-    spinClock.restart();
 }
 
 void SlotMachine::stopSpin() {
@@ -73,7 +72,7 @@ void SlotMachine::stopSpin() {
     }
 }
 
-void SlotMachine::draw() {
+void SlotMachine::drawReel() {
     for (auto& reel : reels) {
         if (reel.spriteSymbols.empty()) continue;
 
@@ -93,7 +92,7 @@ bool SlotMachine::areAllReelsStopped() const {
     return true;
 }
 
-void SlotMachine::update() {
+void SlotMachine::updateReel() {
     if (currentState) {
         currentState->update(*this);
     }

@@ -16,13 +16,13 @@ int main() {
                 window.close();
         }
 
-        slotMachine.update();
+        slotMachine.updateReel();
         ui.checkBtn(slotMachine);
 
         window.clear();
 
         ui.drawUI();
-        slotMachine.draw();
+        slotMachine.drawReel();
         window.display();
     }
 

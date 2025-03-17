@@ -34,7 +34,6 @@ private:
     sf::Font font;
     sf::Text scoreText;
 
-    sf::Clock spinClock; 
     sf::Clock stopClock;
 	size_t reelIndex = 0;
 
@@ -54,7 +53,7 @@ public:
     void stopSpin();    
     bool areAllReelsStopped() const;
 
-    void update();       
-    void draw();         
+    void updateReel();       
+    void drawReel();         
     void checkWin();
 };
