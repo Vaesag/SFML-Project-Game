@@ -19,7 +19,7 @@ void SlotMachine::setTextures() {
 SlotMachine::SlotMachine(sf::RenderWindow& win) : window(win) {
     setTextures();
 
-    if (!font.loadFromFile("fonts/Arial.ttf")) { // Загружаем шрифт
+    if (!font.loadFromFile("fonts/Arial.ttf")) {
         std::cerr << "Error download font" << std::endl;
     }
 
@@ -45,7 +45,6 @@ SlotMachine::SlotMachine(sf::RenderWindow& win) : window(win) {
             index++;
         }
     }
-    printReels();
 }
 
 void SlotMachine::startSpin() {
@@ -57,8 +56,6 @@ void SlotMachine::startSpin() {
 }
 
 void SlotMachine::stopSpin() {
-    
-
     if (reelIndex < reels.size() && stopClock.getElapsedTime().asSeconds() > 1.0f) {
         reels[reelIndex].spinning = false;
         reels[reelIndex].speed = 0.0f;
@@ -84,15 +81,26 @@ void SlotMachine::draw() {
             window.draw(sprite);
         }
     }
+    window.draw(scoreText);
+}
 
-    drawScore(window);
+bool SlotMachine::areAllReelsStopped() const {
+    for (const auto& reel : reels) {
+        if (reel.spinning) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void SlotMachine::update() {
+    if (currentState) {
+        currentState->update(*this);
+    }
+
     for (auto& reel : reels) {
         if (!reel.spinning) continue;
 
-        // 🔥 Теперь вращаем и `symbols`, и `spriteSymbols`
         std::rotate(reel.symbols.rbegin(), reel.symbols.rbegin() + 1, reel.symbols.rend());
         std::rotate(reel.spriteSymbols.rbegin(), reel.spriteSymbols.rbegin() + 1, reel.spriteSymbols.rend());
 
@@ -109,32 +117,9 @@ void SlotMachine::update() {
     }
 }
 
-
-void SlotMachine::printReels() {
-    std::cout << "\n--- STATUS REEL ---\n";
-    for (size_t i = 0; i < reels.size(); i++) {
-        std::cout << "REEL " << i + 1 << " (spinning: " << (reels[i].spinning ? "true" : "false") << "): ";
-
-        for (size_t j = 0; j < reels[i].symbols.size(); j++) { // Выводим символы напрямую
-            std::cout << static_cast<int>(reels[i].symbols[j]) << "(" << reels[i].spriteSymbols[j].getPosition().y << ")  ";
-        }
-        std::cout << "\n";
-    }
-}
-
-bool SlotMachine::areAllReelsStopped() const {
-    for (const auto& reel : reels) {
-        if (reel.spinning) {
-            return false; 
-        }
-    }
-    return true; 
-}
-
 void SlotMachine::checkWin() {
     if (reels.empty()) return;
 
-    // Таблица наград
     std::map<Symbol, int> rewardTable = {
         {Symbol::Lemon, 1000000},
         {Symbol::Pineapple, 100000},
@@ -142,19 +127,17 @@ void SlotMachine::checkWin() {
         {Symbol::Strawberry, 1000}
     };
 
-    // Подсчёт символов во втором ряду
     std::map<Symbol, int> count;
     for (size_t i = 0; i < reels.size(); i++) {
-        Symbol symbol = reels[i].symbols[1]; // Берём второй символ каждого барабана
+        Symbol symbol = reels[i].symbols[1]; 
         count[symbol]++;
     }
 
-    // Проверяем, есть ли хотя бы 2 одинаковых символа
-    Symbol winningSymbol = Symbol::Strawberry; // По умолчанию
+    Symbol winningSymbol = Symbol::Strawberry; 
     int maxCount = 0;
 
     for (const auto& pair : count) {
-        if (pair.second >= 2) { // Если есть хотя бы 2 одинаковых
+        if (pair.second >= 2) { 
             if (pair.second > maxCount || (pair.second == maxCount && rewardTable[pair.first] > rewardTable[winningSymbol])) {
                 winningSymbol = pair.first;
                 maxCount = pair.second;
@@ -162,36 +145,36 @@ void SlotMachine::checkWin() {
         }
     }
 
-    // Если не нашли хотя бы 2 одинаковых символа → нет выигрыша
     if (maxCount < 2) {
-        std::cout << "❌ NO WIN (All symbols different)" << std::endl;
+        std::cout << "NO WIN (All symbols different)" << std::endl;
         return;
     }
 
-    // Начисляем очки
     int winAmount = (maxCount == 4) ? rewardTable[winningSymbol] : rewardTable[winningSymbol] / 2;
     score += winAmount;
 
-    std::cout << "🎉 WIN! Score: " << score << " (" << maxCount << "x " << static_cast<int>(winningSymbol) << ")" << std::endl;
+    std::cout << "WIN! Score: " << score << " (" << maxCount << "x " << static_cast<int>(winningSymbol) << ")" << std::endl;
 
-    scoreText.setString(std::to_string(score)); // Обновляем текст счёта
-}
-
-
-
-
-void SlotMachine::drawScore(sf::RenderWindow& window) {
-    window.draw(scoreText);
+    scoreText.setString(std::to_string(score));
 }
 
 void SlotMachine::resetState() {
-    reelIndex = 0;  // 🔥 Теперь reelIndex не static и сбрасывается
-    stopClock.restart(); // 🔥 Сбрасываем таймер остановки перед новым спином
+    reelIndex = 0;
+    stopClock.restart();
 
     for (auto& reel : reels) {
-        reel.spinning = false; // 🔥 Все барабаны снова в состоянии покоя
+        reel.spinning = false;
         reel.speed = 0.0f;
     }
 
-    std::cout << "🔄 Reset completed! Ready for new spin.\n";
+    std::cout << "Reset completed! Ready for new spin.\n";
+}
+
+void SlotMachine::changeState(State* newState) {
+    if (currentState) {
+        currentState->exit(*this);
+        delete currentState;
+    }
+    currentState = newState;
+    currentState->enter(*this);
 }

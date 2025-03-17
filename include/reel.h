@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "const.h"
+#include "state.h"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -15,7 +16,7 @@ enum class Symbol {
 
 struct Reel {
     std::vector<Symbol> symbols = { Symbol::Strawberry, Symbol::Grapes, Symbol::Pineapple, Symbol::Lemon };
-    std::vector<float> initialPositions;  // <-- Добавляем вектор исходных позиций
+    std::vector<float> initialPositions;
     std::vector<sf::Sprite> spriteSymbols;
     float speed = 0.0f;
     bool spinning = false;
@@ -35,24 +36,25 @@ private:
 
     sf::Clock spinClock; 
     sf::Clock stopClock;
+	size_t reelIndex = 0;
 
-	size_t reelIndex = 0; // <-- Индекс текущего барабана
+    State* currentState = nullptr;
 
 public:
     SlotMachine(sf::RenderWindow& win);
+
+    void changeState(State* newState);
+    void resetState();
+    State* getCurrentState() const { return currentState; }
+
+    void loadTexture(Symbol key, const std::string& path); 
+    void setTextures();
+
+    void startSpin();    
+    void stopSpin();    
     bool areAllReelsStopped() const;
 
-    void loadTexture(Symbol key, const std::string& path); // Загрузка текстур
-    void setTextures();
-    void resetState();
-    void startSpin();    // Запуск вращения
-    void stopSpin();     // Остановка вращения
-
-    void update();       // Обновление логики вращения
-    void draw();         // Отрисовка барабанов
-   
-    void printReels(); // Функция для отладки (вывод состояния барабанов)
-
-    void checkWin(); // Функция проверки выигрыша
-    void drawScore(sf::RenderWindow& window); // Отрисовка счёта
+    void update();       
+    void draw();         
+    void checkWin();
 };

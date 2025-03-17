@@ -1,4 +1,6 @@
 ﻿#include "../include/ui.h"
+#include "../include/SpinningState.h"
+#include "../include/StoppingState.h"
 
 void UI::loadTexture(const std::string& key, const std::string& path, sf::IntRect rect, bool smooth) {
     sf::Texture texture;
@@ -42,47 +44,22 @@ void UI::drawUI() {
     window.draw(stopBtn);
 }
 
-void UI::update(SlotMachine& slotMachine) {
+void UI::checkBtn(SlotMachine& slotMachine) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
         if (startBtn.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-            if (gameState == GameState::Waiting) {
-                gameState = GameState::Spinning;
-                slotMachine.startSpin();
-                std::cout << "START SPIN" << std::endl;
+            if (dynamic_cast<WaitingState*>(slotMachine.getCurrentState())) {
+                slotMachine.changeState(new SpinningState());
+                std::cout << "Start button pressed!" << std::endl;
             }
         }
 
         if (stopBtn.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-            if (gameState == GameState::Spinning) {
-                gameState = GameState::Stopping;
-                stopClock.restart();
-                std::cout << "STOP SPIN" << std::endl;
+            if (dynamic_cast<SpinningState*>(slotMachine.getCurrentState())) {
+                slotMachine.changeState(new StoppingState());
+                std::cout << "Stop button pressed!" << std::endl;
             }
-        }
-    }
-
-    if (gameState == GameState::Stopping) {
-        slotMachine.stopSpin();
-
-        // Теперь используем новый метод вместо прямого доступа к `reels`
-        if (slotMachine.areAllReelsStopped()) {
-            gameState = GameState::Checking;
-            slotMachine.checkWin();
-            std::cout << "ALL REELS STOPPED! CHECKING RESULT..." << std::endl;
-			slotMachine.printReels();
-        }
-    }
-
-    if (gameState == GameState::Checking) {
-        static sf::Clock checkClock;
-
-        if (checkClock.getElapsedTime().asSeconds() > 3.0f) { 
-            gameState = GameState::Waiting;
-            checkClock.restart();
-            slotMachine.resetState();
-            std::cout << "✅ Game reset! Waiting for new spin..." << std::endl;
         }
     }
 }

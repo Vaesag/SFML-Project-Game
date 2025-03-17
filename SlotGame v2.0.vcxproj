@@ -147,9 +147,14 @@ vorbis.lib
     <ClCompile Include="src\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CheckingState.h" />
     <ClInclude Include="include\const.h" />
     <ClInclude Include="include\reel.h" />
+    <ClInclude Include="include\SpinningState.h" />
+    <ClInclude Include="include\state.h" />
+    <ClInclude Include="include\StoppingState.h" />
     <ClInclude Include="include\UI.h" />
+    <ClInclude Include="include\WaitingState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
