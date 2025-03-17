@@ -1,6 +1,4 @@
-#include <SFML/Graphics.hpp>
 #include "include/UI.h"
-#include "include/reel.h"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SlotGames", sf::Style::Titlebar | sf::Style::Close);

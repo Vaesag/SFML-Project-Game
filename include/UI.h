@@ -1,9 +1,5 @@
 #pragma once
-#include "const.h"
 #include "reel.h"
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <map>
 
 enum class GameState { Waiting, Spinning, Stopping, Checking };
 

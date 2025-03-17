@@ -1,9 +1,9 @@
-#include "../include/ui.h"
+ï»¿#include "../include/ui.h"
 
 void UI::loadTexture(const std::string& key, const std::string& path, sf::IntRect rect, bool smooth) {
     sf::Texture texture;
     if (!texture.loadFromFile(path, rect)) {
-        std::cerr << "Îøèáêà çàãðóçêè òåêñòóðû: " << path << std::endl;
+        std::cerr << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ¸ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñ‹: " << path << std::endl;
         return;
     }
     if (smooth) {
@@ -66,11 +66,23 @@ void UI::update(SlotMachine& slotMachine) {
     if (gameState == GameState::Stopping) {
         slotMachine.stopSpin();
 
-        // Òåïåðü èñïîëüçóåì íîâûé ìåòîä âìåñòî ïðÿìîãî äîñòóïà ê `reels`
+        // Ð¢ÐµÐ¿ÐµÑ€ÑŒ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÐ¼ Ð½Ð¾Ð²Ñ‹Ð¹ Ð¼ÐµÑ‚Ð¾Ð´ Ð²Ð¼ÐµÑÑ‚Ð¾ Ð¿Ñ€ÑÐ¼Ð¾Ð³Ð¾ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð° Ðº `reels`
         if (slotMachine.areAllReelsStopped()) {
             gameState = GameState::Checking;
+            slotMachine.checkWin();
             std::cout << "ALL REELS STOPPED! CHECKING RESULT..." << std::endl;
 			slotMachine.printReels();
+        }
+    }
+
+    if (gameState == GameState::Checking) {
+        static sf::Clock checkClock;
+
+        if (checkClock.getElapsedTime().asSeconds() > 3.0f) { 
+            gameState = GameState::Waiting;
+            checkClock.restart();
+            slotMachine.resetState();
+            std::cout << "âœ… Game reset! Waiting for new spin..." << std::endl;
         }
     }
 }
